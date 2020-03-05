@@ -1,28 +1,39 @@
 # Burke_Docker
 A docker version of Burke (a Bio-tools and edam User interface foR automated worKflow Exploration), a web app used to demonstrate the functionalities of APE library.
 
-## Installation
+Web application can be found at http://ape.science.uu.nl/
 
-Before running the web app, it is required to have installed the following software on the hosting machine (in case of sunning on the locas server, the software should be instaled on the local machine):
+## Installation (on the local machine)
+
+Before running the web app locally, it is required to have installed the following software on the local machine:
 - Docker (https://docs.docker.com/install/)
 - Docker-compose (https://docs.docker.com/compose/install/)
 
-## Running the web application on the local server
+## Running the web application (on the local machine)
 
-In order to run the web app the 
+In order to run the web application on the local machine the following steps should be performed:
+
 1. Clone this repo to your local machine using 
 ```bash
 git clone git@github.com:sanctuuary/Burke_Docker.git
 ```
-2. Navigate in the terminal to the root directory of the repo
+or
+```bash
+git clone https://github.com/sanctuuary/Burke_Docker.git
+```
+2. Navigate to the root directory of the repo in terminal
+```bash
+cd ~/git/Burke_Docker
+```
 3. Execute command
 ```bash
-sudo docker-compose up
+sudo docker-compose -f docker-compose.yml up -d --build
 ```
 4.  Open a web browser and go to http://localhost:8080/
-5. In order to stop the process simply run the command
+5. Experiment with the tool
+6. In order to stop the process simply run the command
 ```bash
-sudo docker-compose down
+sudo docker-compose -f docker-compose.yml down
 ```
 
 #### Note:
