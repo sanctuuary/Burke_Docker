@@ -17,12 +17,12 @@ git clone git@github.com:sanctuuary/Burke_Docker.git
 2. Navigate in the terminal to the root directory of the repo
 3. Execute command
 ```bash
-sudo docker-compose up
+sudo docker-compose -f docker-compose.yml up -d
 ```
 4.  Open a web browser and go to http://localhost:8080/
 5. In order to stop the process simply run the command
 ```bash
-sudo docker-compose down
+sudo docker-compose -f docker-compose.yml down
 ```
 
 #### Note:
