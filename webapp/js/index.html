@@ -1,0 +1,147 @@
+<!doctype html>
+<html>
+<head>
+	<title>bio.tools APE - Demo</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.js"></script>	<!--AngularJS-->
+	<script src="UIController.js"></script>	<!--Controller file-->
+  	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">	<!-- Google font "Open Sans" -->
+    <link rel="stylesheet" href="..\css\stylesheet.css">	<!-- Css file -->
+</head>
+
+<style type="text/css">
+	body { background: #F5F5F5 !important; } /* Adding !important forces the browser to overwrite the default style applied by Bootstrap */
+</style>
+
+<body>
+	
+	<div ng-app="UI" ng-controller ="UIController">
+
+		<div id="options">
+			<h1>bio.tools APE - Demo</h1>
+			<p>Welcome! The bio.tools APE Demonstrator invites you to try out automated workflow
+			composition based on <a href="https://bio.tools/">bio.tools</a>, <a href="https://ifb-elixirfr.github.io/edam-browser/">EDAM</a>
+			and APE! You can test any of the four use cases described in the
+			Bioinformatics paper on <a href="https://doi.org/10.1093/bioinformatics/bty646">Automated workflow Composition in Mass Spectrometry Based Proteomics<a>, 
+			or create your own requests. </p>
+			<p><button class="button" ng-click="dropdownModelNameDataInput = 'http://edamontology.org/data_0943'; dropdownModelNameFormatInput='http://edamontology.org/format_3712'; dropdownModelNameDataOutput='http://edamontology.org/data_1506'; dropdownModelNameFormatOutput='http://edamontology.org/format_1915'">Use Case 1</button>
+			<button class="button" ng-click="dropdownModelNameDataInput = 'http://edamontology.org/data_0943'; dropdownModelNameFormatInput='http://edamontology.org/format_3712'; dropdownModelNameDataOutput='http://edamontology.org/data_1506'; dropdownModelNameFormatOutput='http://edamontology.org/format_1915'">Use Case 2</button>
+			<button class="button" ng-click="dropdownModelNameDataInput = 'http://edamontology.org/data_0943'; dropdownModelNameFormatInput='http://edamontology.org/format_3712'; dropdownModelNameDataOutput='http://edamontology.org/data_0945';dropdownModelNameFormatOutput='http://edamontology.org/format_1915'">Use Case 3</button>
+			<button class="button" ng-click="dropdownModelNameDataInput = 'http://edamontology.org/data_0943'; dropdownModelNameFormatInput='http://edamontology.org/format_3712'; dropdownModelNameDataOutput='http://edamontology.org/data_0928'; dropdownModelNameFormatOutput='http://edamontology.org/format_1915'">Use Case 4</button></p>
+		</div>
+		
+		<div id="options">
+			<div ng-init="getTypes(); getConstraintDescriptions();"></div>	<!-- Get data types from the backend -->
+			
+			<h2>Inputs</h2>
+			<p>Specify the input data (type and format) of the workflow. Fields that you leave emtpy will simply be ignored.</p>
+			<button class="button" ng-click="addInputs()">+</button>
+			<table>
+				<tbody id="inputs">
+					<tr>
+						<th>
+							Data type:
+						</th>
+						<th>
+							Data format:
+						</th>
+					</tr>
+					<tr id="inputSection0">
+						<td id="dataMenuInputs0">
+							<select ng-model="dropdownModelNameDataInput" ng-options="x.value as x.label for x in dataTypes | orderBy:'label'">
+								<option value="" label=""></option>
+							</select>	<!--Dropdown list with data types -->
+						</td>
+						<td id="formatMenuInputs0">
+							<select ng-model="dropdownModelNameFormatInput" ng-options="x.value as x.label for x in formatTypes | orderBy:'label'">	<!--Dropdown list with format types -->
+								<option value="" label=""></option>
+							</select>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<h2>Outputs</h2>
+			<p>Specify the desired output data (type and format) of the workflow. Fields that you leave emtpy will simply be ignored.</p>
+
+			<button class="button" ng-click="addOutputs()">+</button>
+			<table>
+				<tbody id="outputs">
+					<tr>
+						<th>
+							Data type:
+						</th>
+						<th>
+							Data format:
+						</th>
+					</tr>
+					<tr id="outputSection0">	<!-- One input with a format type and a data type-->
+						<td id="dataMenuOutputs0">
+							<select ng-model=dropdownModelNameDataOutput ng-options="x.value as x.label for x in dataTypes | orderBy:'label'">	<!--Dropdown list with data types -->
+								<option value="" label=""></option>
+							</select>
+						</td>
+						<td id="formatMenuOutputs0">
+							<select ng-model=dropdownModelNameFormatOutput ng-options="x.value as x.label for x in formatTypes | orderBy:'label'">	<!--Dropdown list with format types -->
+								<option value="" label=""></option>
+							</select>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		  
+			<h2>Constraints</h2>
+			<p>Specify any additional properties that you want the workflow to fulfill. Select
+			a constraint template first, then fill it with type, format or operation terms.</p>
+			
+			<button class="button" ng-click="addConstraint()">+</button>
+			<table>
+				<tbody id="constraints">
+					<tr id="testID">
+						<td id="constraintsSection">
+							<select ng-model=selectedConstraint ng-options="x.value as x.label for x in constraints">
+								<option value="" label=""></option>
+							</select>
+						</td>
+					</tr>
+					<tr ng-repeat="rowContent in constraintRows">
+						<td>{{rowContent}}</td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<h2>Options</h2>
+			<p>Here you can configure the basic parameters of the workflow composition algorithm.</p>
+			<table>
+				<tbody id="config">
+					<tr id="configSection">	<!-- One input with a format type and a data type-->
+						<td>
+							Number of solutions: <input ng-model=solutionNumber type="number" required style="display: inline">
+						</td>
+						<td>
+							Min workflow length: <input ng-model=minWorkflowLength type="number" required style="display: inline">
+						</td>
+						<td>
+							Max workflow length: <input ng-model=maxWorkflowLength type="number" required style="display: inline">
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		
+		</div>
+		<button class="runButton" ng-click="fetchUserInputData()">Run</button>
+		
+		<table id="results" ng-show="showTable">
+		    <tr id="firstRow">
+					<th><input ng-model="dummy" type="checkbox" checked="true"></th>
+					<th>Tool sequence</th>
+					<th>Data Flow Image</th>
+					<th>Control Flow Image</th>
+			</tr>
+			<tbody id="resultsBody">
+			</tbody>
+		</table>
+	</div>	
+	<div id="loading"></div>
+</body>
+
+</html>

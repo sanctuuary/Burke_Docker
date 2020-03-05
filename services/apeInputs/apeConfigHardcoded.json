@@ -1,0 +1,16 @@
+{
+  "ontology_path": "./apeInputs/ontology.owl",
+  "ontologyPrexifIRI": "http://edamontology.org/",
+  "toolsTaxonomyRoot": "operation_0004",
+  "dataTaxonomyRoot": "",
+  "dataSubTaxonomyRoot": ["data_0006", "format_1915" ],
+  "tool_annotations_path": "./apeInputs/toolAnnotations.json",
+  "constraints_path": "./apeInputs/constraints.json",
+  "shared_memory": "true",
+  "solutions_path": "./results/sat_solutions.txt",
+  "execution_scripts_folder": "./results/",
+  "number_of_generated_graphs" : 5,
+  "debug_mode": "false",
+  "use_workflow_input": "all",
+  "use_all_generated_data": "one"
+}

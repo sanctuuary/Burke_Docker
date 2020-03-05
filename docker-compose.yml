@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+ webapp:
+  build: ./webapp
+  volumes:
+   - ./webapp:/webapp
+  ports:
+   - 8080:8080
+
+ services:
+  build: ./services
+  ports:
+   - 8090:8090
