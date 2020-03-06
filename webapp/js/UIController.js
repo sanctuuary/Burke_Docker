@@ -39,6 +39,7 @@ app.directive('dir2', function () { // Directive for the control flow picture li
 		app.controller('UIController', function($scope, $http, $filter) {	//Controller
 			/** Tool list */
 			$scope.tools;
+			$scope.url = "http://localhost"
 			/** Currently selected tool */
 			$scope.selectedInputs = new Array('Sequence feature source');
 			/** Data type Array*/
@@ -83,6 +84,11 @@ app.directive('dir2', function () { // Directive for the control flow picture li
 			
 			/** Combines the simpleResults, dataFlowImages and controlFlowImages arrays in one array and creates correct amount of checkboxes*/
 			$scope.buildResultsTable = function(){
+				if($scope.simpleResults == null || $scope.simpleResults.length == 0){
+					document.getElementById("loading").innerHTML = '';
+					alert("No solutions were found. The specification might be too restrictive.");
+					return;
+				}
 				for(var i=0;i<$scope.simpleResults.length;i++){
 					/** Create new row element **/
 					var newRow = document.createElement("tr");
@@ -106,7 +112,7 @@ app.directive('dir2', function () { // Directive for the control flow picture li
 					/** Append simple result to the new row **/
 					var tdSimpleResults = document.createElement("td");
 					tdSimpleResults.id = "tdSimpleResultsId" + i;
-					var currSimpleResult = $scope.simpleResults[i] + " ";
+					var currSimpleResult = $scope.simpleResults[i];
 					tdSimpleResults.innerText = currSimpleResult;
 					newRow.appendChild(tdSimpleResults);
 					
@@ -135,6 +141,7 @@ app.directive('dir2', function () { // Directive for the control flow picture li
 					/** Append the new row **/
 					document.getElementById("resultsBody").appendChild(newRow);
 				}
+				$scope.showTable = true;
 				document.getElementById("loading").innerHTML = '';
 				location.href = "#";
 				location.href = "#firstRow";
@@ -142,7 +149,7 @@ app.directive('dir2', function () { // Directive for the control flow picture li
 			
 			/** Fetches the data and format types*/
 			$scope.getTypes = function(){
-				$http.get("http://localhost:8090/getTypes")
+				$http.get($scope.url + ":8001/getTypes")
 				.then(function successCallback(response) {
 					$scope.dataTypes = response.data.dataTypes;
 					$scope.formatTypes = response.data.formatTypes;
@@ -155,7 +162,7 @@ app.directive('dir2', function () { // Directive for the control flow picture li
 			
 			/** Fetches the constraint descriptions */
 			$scope.getConstraintDescriptions = function(){
-				$http.get("http://localhost:8090/getConstraintDescriptions")
+				$http.get($scope.url + ":8001/getConstraintDescriptions")
 				.then(function(response) {
 					$scope.constraints = response.data;
 				});	
@@ -165,7 +172,7 @@ app.directive('dir2', function () { // Directive for the control flow picture li
 			 * Send post request to APE to run it
 			 */
 			$scope.writeConstraints = function(constraints){
-				$http.post("http://localhost:8090/writeConstraints", constraints);
+				$http.post($scope.url + ":8001/writeConstraints", constraints);
 			}
 
 
@@ -173,58 +180,20 @@ app.directive('dir2', function () { // Directive for the control flow picture li
 			 * Send post request to APE to run it
 			 */
 			$scope.runApe = function(userInputsStringified){
-				$http.post("http://localhost:8090/run", userInputsStringified)
+				$http.post($scope.url + ":8001/run", userInputsStringified)
 	            .then(function(response) {
-	            	$scope.getResults();
-	            	$scope.showTable = true;
+					console.log(response);
+					console.log(response.data);
+					console.log(response.data.simpleResults);
+					$scope.simpleResults = JSON.parse(response.data.simpleResults);
+					$scope.controlFlowImages = JSON.parse(response.data.controlFlowImg);
+					$scope.dataFlowImages = JSON.parse(response.data.dataFlowImg);
+					$scope.buildResultsTable();
 	                console.log(response.data);
 	            }, function(error){
 	            	console.log("Post request failed"); 
 	            });
 			}
-			
-			/**
-			 * Get results from APE
-			 */
-			$scope.getResults = function(){
-				/** GET-request for the simple results */
-				$http.get("http://localhost:8090/getSimpleResults")
-				.then(function(response) {
-					$scope.simpleResults = response.data;
-					/** GET-request for the data flow images */
-					$http.get("http://localhost:8090/getDataFlowImg") // old full results
-					.then(function(response) {
-						$scope.dataFlowImages = response.data;
-						/** GET request for the control flow images */
-						$http.get("http://localhost:8090/getControlFlowImg")
-						.then(function(response) {
-							$scope.controlFlowImages = response.data;
-							$scope.buildResultsTable();
-						});	
-					});	
-				});
-			}
-			
-			
-			/*
-			 * Save images locally
-			 */
-//			
-//			$scope.saveImagesLocally = function(){
-//				/* Name of the data flow image files */
-//				dataFlowImageName = "dataFlowImage";
-//				/* Name of the control flow image files */
-//				controlFlowImageName = "controlFlowImage";
-//				/* Loops through the image arrays and saves them locally */
-//				 for (var i=0; i<dataFlowImages.length; i++) {
-//				      var blobData = new Blob(dataFlowImages[i], {type: 'image/png'});
-//					  var fileData = new File(blobData, dataFlowImageName + i + ".png");
-//					  var blobControl = new Blob(controlFlowImages[i], {type: 'image/png'});
-//					  $scope.controlFlowBlobs.push((window.URL || window.webkitURL).createObjectURL(blobControl));
-//					  var fileControl = new File(blobControl, controlFlowImageName + i + ".png");
-//					  
-//				    }
-//			}
 			
 			/**
 			 * Add another input dropdown box-pair (data type and data format)

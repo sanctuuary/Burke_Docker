@@ -6,9 +6,9 @@ services:
   volumes:
    - ./webapp:/webapp
   ports:
-   - 8081:8080
+   - 81:8080
 
  services:
   build: ./services
   ports:
-   - 8090:8090
+   - 8001:8001
