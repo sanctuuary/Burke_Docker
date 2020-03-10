@@ -40,4 +40,5 @@ sudo docker-compose -f docker-compose.yml down
 In case that your ports **81** and **8001** are occupied or you simply want to change them, this can be done by changing the content of the file `docker-compose.yml`. Specifically by changing the (bold) ports at  "- **81**:8080" and "- **8001**:8001" (do not change the second, non-bold, ports). If the port  "- **81**:8080"  was changed to e.g.  "- **1234**:8080" the web app could be accessed at http://localhost:1234/
 
 
+The list of tools (from bio.tools) that are currently used is specified in "Burke_Docker/services/apeInputs/toolAnnotations.json". In order to use additional tools the file should be modified accordingly.
 
