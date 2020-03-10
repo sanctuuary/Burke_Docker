@@ -25,9 +25,9 @@
 			Bioinformatics paper on <a href="https://doi.org/10.1093/bioinformatics/bty646">Automated workflow Composition in Mass Spectrometry Based Proteomics<a>, 
 			or create your own requests. </p>
 			<p><button class="button" ng-click="dropdownModelNameDataInput = 'http://edamontology.org/data_0943'; dropdownModelNameFormatInput='http://edamontology.org/format_3712'; dropdownModelNameDataOutput='http://edamontology.org/data_1506'; dropdownModelNameFormatOutput='http://edamontology.org/format_1915'; useCase1()">Use Case 1</button>
-			<button class="button" ng-click="dropdownModelNameDataInput = 'http://edamontology.org/data_0943'; dropdownModelNameFormatInput='http://edamontology.org/format_3712'; dropdownModelNameDataOutput='http://edamontology.org/data_1506'; dropdownModelNameFormatOutput='http://edamontology.org/format_1915'">Use Case 2</button>
-			<button class="button" ng-click="dropdownModelNameDataInput = 'http://edamontology.org/data_0943'; dropdownModelNameFormatInput='http://edamontology.org/format_3712'; dropdownModelNameDataOutput='http://edamontology.org/data_0945';dropdownModelNameFormatOutput='http://edamontology.org/format_1915'">Use Case 3</button>
-			<button class="button" ng-click="dropdownModelNameDataInput = 'http://edamontology.org/data_0943'; dropdownModelNameFormatInput='http://edamontology.org/format_3712'; dropdownModelNameDataOutput='http://edamontology.org/data_0928'; dropdownModelNameFormatOutput='http://edamontology.org/format_1915'">Use Case 4</button></p>
+			<button class="button" ng-click="dropdownModelNameDataInput = 'http://edamontology.org/data_0943'; dropdownModelNameFormatInput='http://edamontology.org/format_3712'; dropdownModelNameDataOutput='http://edamontology.org/data_2600'; dropdownModelNameFormatOutput='http://edamontology.org/format_1915'; useCase2()">Use Case 2</button>
+			<button class="button" ng-click="dropdownModelNameDataInput = 'http://edamontology.org/data_0943'; dropdownModelNameFormatInput='http://edamontology.org/format_3712'; dropdownModelNameDataOutput='http://edamontology.org/data_0945';dropdownModelNameFormatOutput='http://edamontology.org/format_1915'; useCase3()">Use Case 3</button>
+			<button class="button" ng-click="dropdownModelNameDataInput = 'http://edamontology.org/data_0943'; dropdownModelNameFormatInput='http://edamontology.org/format_3712'; dropdownModelNameDataOutput='http://edamontology.org/data_0928'; dropdownModelNameFormatOutput='http://edamontology.org/format_1915'; useCase4()">Use Case 4</button></p>
 		</div>
 		
 		<div id="options">
@@ -36,8 +36,8 @@
 			<h2>Inputs</h2>
 			<p>Specify the input data (type and format) of the workflow. Fields that you leave emtpy will simply be ignored.</p>
 			<button class="button" ng-click="addInputs()">+</button>
+			<button class="button" ng-click="clearInputs()">Clear all</button>
 			<table>
-				<tbody id="inputs">
 					<tr>
 						<th>
 							Data type:
@@ -58,6 +58,7 @@
 							</select>
 						</td>
 					</tr>
+				<tbody id="inputs">
 				</tbody>
 			</table>
 			
@@ -65,8 +66,8 @@
 			<p>Specify the desired output data (type and format) of the workflow. Fields that you leave emtpy will simply be ignored.</p>
 
 			<button class="button" ng-click="addOutputs()">+</button>
+			<button class="button" ng-click="clearOutputs()">Clear all</button>
 			<table>
-				<tbody id="outputs">
 					<tr>
 						<th>
 							Data type:
@@ -87,6 +88,7 @@
 							</select>
 						</td>
 					</tr>
+				<tbody id="outputs">
 				</tbody>
 			</table>
 		  
@@ -95,6 +97,7 @@
 			a constraint template first, then fill it with type, format or operation terms.</p>
 			
 			<button class="button" ng-click="addConstraint()">+</button>
+			<button class="button" ng-click="clearConstraints()">Clear all</button>
 			<table>
 				<tr id="testID">
 						<td id="constraintsSection">

@@ -66,7 +66,6 @@ var app = angular.module('UI', [], function ($compileProvider) {
 					var checkbox = document.createElement("input");
 					checkbox.type="checkbox";
 					checkbox.id = "checkbox" + i;
-					checkbox.value = i;
 					//checkbox.onclick = "checkboxChecked(this);";
 					/** Save checkbox values **/
 					/** Append checkbox element to checkbox cell **/
@@ -163,8 +162,23 @@ var app = angular.module('UI', [], function ($compileProvider) {
 			 * Function called upon loading the 1st scenario
 			 */
 			$scope.useCase1 = function(){
-				/** Copy the parent div */
-				alert("ddd");
+				clearInputData();
+				clearOutputData();
+			}
+			
+			$scope.useCase2 = function(){
+				clearInputData();
+				clearOutputData();
+			}
+			
+			$scope.useCase3 = function(){
+				clearInputData();
+				clearOutputData();
+			}
+			
+			$scope.useCase4 = function(){
+				clearInputData();
+				clearOutputData();
 			}
 			
 			/**
@@ -184,6 +198,36 @@ var app = angular.module('UI', [], function ($compileProvider) {
 		        /** Append the copy to the cloneDiv container */
 		        angular.element(document.getElementById("inputs")).append(copy);
 			}
+			
+			/**
+			 * Function called to remove all the constraints from the file
+			 */
+			$scope.clearConstraints = function(){
+				const constraints = document.getElementById("constraints");
+				constraints.innerHTML = '';
+				$scope.counter = 0;
+			}
+			
+			$scope.clearInputs = function(){
+				clearInputData();
+			}
+			
+			$scope.clearOutputs = function(){
+				clearOutputData();
+			}
+			
+			function clearInputData(){
+				const data = document.getElementById("inputs");
+				data.innerHTML = '';
+				$scope.counterInputs = 1;
+			}
+			
+			function clearOutputData(){
+				const data = document.getElementById("outputs");
+				data.innerHTML = '';
+				$scope.counterOutputs = 1;
+			}
+			
 
 			/**
 			 * Add another output dropdown box-pair (data type and data format)
@@ -253,8 +297,9 @@ var app = angular.module('UI', [], function ($compileProvider) {
 						$scope.toolsOptions = getToolOptions();
 					}
                     
-
-				
+				if(document.getElementById("constraintsSection").children[0].value == ""){
+					return;
+				}
 				var constraintDropdown = document.getElementById("constraintsSection").children[0];
 				var selectedConstraint =  JSON.parse(constraintDropdown.value.replace("string:",""));
 				var paramSize = selectedConstraint.parameters.length;
@@ -293,11 +338,13 @@ var app = angular.module('UI', [], function ($compileProvider) {
 						newFormatSelect.setAttribute("dimensionNo", 2);
 						
 						cell.append(newFormatSelect); 
+						newTypeSelect.value="http://edamontology.org/data_0006";
+						newFormatSelect.value = "http://edamontology.org/format_1915";
 					 }
 				}
 				cell.append(templateParts[paramSize]);
 
-
+				
 				$scope.counter++;
 			}
 			
