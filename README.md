@@ -29,7 +29,7 @@ cd ~/git/Burke_Docker
 ```bash
 sudo docker-compose -f docker-compose.yml up -d --build
 ```
-4.  Open a web browser and go to http://localhost:8080/
+4.  Open a web browser and go to http://localhost:81/
 5. Experiment with the tool
 6. In order to stop the process simply run the command
 ```bash
@@ -37,7 +37,7 @@ sudo docker-compose -f docker-compose.yml down
 ```
 
 #### Note:
-In case that your ports **8080** and **8090** are occupied or you simply want to change them, this can be done by changing the content of the file `docker-compose.yml`. Specifically by changing the (bold) ports at  "- **8080**:8080" and "- **8090**:8090" (do not change the second, non-bold, ports). If the port  "- **8080**:8080"  was changed to e.g.  "- **1234**:8080" the web app could be accessed at http://localhost:1234/
+In case that your ports **81** and **8001** are occupied or you simply want to change them, this can be done by changing the content of the file `docker-compose.yml`. Specifically by changing the (bold) ports at  "- **81**:8080" and "- **8001**:8001" (do not change the second, non-bold, ports). If the port  "- **81**:8080"  was changed to e.g.  "- **1234**:8080" the web app could be accessed at http://localhost:1234/
 
 
 
