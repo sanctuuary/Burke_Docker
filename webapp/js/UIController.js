@@ -2,39 +2,6 @@ var app = angular.module('UI', [], function ($compileProvider) {
 //	 $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|file|tel):/); // Not working (supposed to remove unsafe tag when opening picture links)
 });
 
-//Creation of the Module
-
-/**app.config(['$compileProvider',	// Serve Downloads
-    function ($compileProvider) {
-        $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|file|blob):/);
-}]);**/
-/**
-app.directive('dir1', function () { // Directive for the data flow picture links (Currently not working correctly)
-    return {
-        restrict: 'A',
-        scope: {},
-        link: function($scope, element, attrs) {
-            if (element[0].tagName !== 'A') {
-                return;
-            }
-            element[0].href = 'data:image/png;base64,{{obj.dataFlowImages}}';
-        }
-    };
- });
-
-app.directive('dir2', function () { // Directive for the control flow picture links (Currently not working correctly)
-    return {
-        restrict: 'A',
-        scope: {},
-        link: function($scope, element, attrs) {
-            if (element[0].tagName !== 'A') {
-                return;
-            }
-            element[0].href = 'data:image/png;base64,{{obj.controlFlowImages}}';
-        }
-    };
- }); **/
-
 
 		app.controller('UIController', function($scope, $http, $filter) {	//Controller
 			/** Tool list */
@@ -50,6 +17,8 @@ app.directive('dir2', function () { // Directive for the control flow picture li
 			$scope.typeOptions;
 			/** Select element containing formats */
 			$scope.formatOptions;
+			/* Number of constraints */
+			$scope.counter = 0;
 			/** select element containing tools */
 			$scope.toolOptions;
 			/** Constraints introduced */
@@ -60,6 +29,8 @@ app.directive('dir2', function () { // Directive for the control flow picture li
 			$scope.counterOutputs = 1;
 			/** Number of solutions to be used for APE */
 			$scope.solutionNumber = 5;
+			/** Number of output types per tool to be consumed within the workflow */
+			$scope.use_all_generated_data = "one";
 			/** Minimum length that the workflows should have */
 			$scope.minWorkflowLength = 1;
 			/** Maximum length that the workflows should have */
@@ -75,17 +46,11 @@ app.directive('dir2', function () { // Directive for the control flow picture li
 			/** Boolean to check if results table should be shown or not **/
 			$scope.showTable = false;
 			 
-			/** Sorts the tool, dataTypes and formatTypes lists **/
-			$scope.sortLists = function(){
-				$scope.tools = $filter('orderBy')($scope.tools, 'label');
-				$scope.dataTypes = $filter('orderBy')($scope.dataTypes, 'label');
-				$scope.formatTypes = $filter('orderBy')($scope.formatTypes, 'label');
-			} 
-			
 			/** Combines the simpleResults, dataFlowImages and controlFlowImages arrays in one array and creates correct amount of checkboxes*/
 			$scope.buildResultsTable = function(){
 				if($scope.simpleResults == null || $scope.simpleResults.length == 0){
 					document.getElementById("loading").innerHTML = '';
+					document.getElementById("exportButton").style.visibility = 'visible';
 					alert("No solutions were found. The specification might be too restrictive.");
 					return;
 				}
@@ -143,14 +108,17 @@ app.directive('dir2', function () { // Directive for the control flow picture li
 				}
 				$scope.showTable = true;
 				document.getElementById("loading").innerHTML = '';
+				document.getElementById("exportButton").style.visibility = 'visible';
 				location.href = "#";
 				location.href = "#firstRow";
 			}
 			
 			/** Fetches the data and format types*/
 			$scope.getTypes = function(){
+				document.getElementById("exportButton").style.visibility = 'hidden';
 				$http.get($scope.url + ":8001/getTypes")
-				.then(function successCallback(response) {
+				.then(function successCallback(response) 
+					{
 					$scope.dataTypes = response.data.dataTypes;
 					$scope.formatTypes = response.data.formatTypes;
 					$scope.tools = response.data.tools;
@@ -182,17 +150,21 @@ app.directive('dir2', function () { // Directive for the control flow picture li
 			$scope.runApe = function(userInputsStringified){
 				$http.post($scope.url + ":8001/run", userInputsStringified)
 	            .then(function(response) {
-					console.log(response);
-					console.log(response.data);
-					console.log(response.data.simpleResults);
 					$scope.simpleResults = JSON.parse(response.data.simpleResults);
 					$scope.controlFlowImages = JSON.parse(response.data.controlFlowImg);
 					$scope.dataFlowImages = JSON.parse(response.data.dataFlowImg);
 					$scope.buildResultsTable();
-	                console.log(response.data);
 	            }, function(error){
 	            	console.log("Post request failed"); 
 	            });
+			}
+			
+			/**
+			 * Function called upon loading the 1st scenario
+			 */
+			$scope.useCase1 = function(){
+				/** Copy the parent div */
+				alert("ddd");
 			}
 			
 			/**
@@ -250,6 +222,7 @@ app.directive('dir2', function () { // Directive for the control flow picture li
 						newOption.value = $scope.formatTypes[i].value;
 						formatOptions.appendChild(newOption);
 					}  
+					//formatOptions.value = "http://edamontology.org/format_1915";
 					return formatOptions;
 			}
 
@@ -268,9 +241,8 @@ app.directive('dir2', function () { // Directive for the control flow picture li
 			 * Add a row for each constraint that's specified
 			 */
 			$scope.constraintRows 
-			$scope.counter = 0;
+			
 			$scope.addConstraint = function(){
-					$scope.sortLists(); 
 				    if($scope.typeOptions == null){
 						$scope.typeOptions = getTypeOptions();
 					}
@@ -319,6 +291,7 @@ app.directive('dir2', function () { // Directive for the control flow picture li
 						var newFormatSelect = angular.copy($scope.formatOptions);
 						newFormatSelect.setAttribute("id", "constr_" + $scope.counter + "_param_"+ i + 1);
 						newFormatSelect.setAttribute("dimensionNo", 2);
+						
 						cell.append(newFormatSelect); 
 					 }
 				}
@@ -327,6 +300,11 @@ app.directive('dir2', function () { // Directive for the control flow picture li
 
 				$scope.counter++;
 			}
+			
+			$scope.exportWorkflows = function(){
+				alert("Export to CWL is not yet supported. We would be happy to collaborate with you on that during the hakaton event! Find us at the workshop or contact at a.l.lamprecht@uu.nl (Anna-Lena) or v.kasalica@uu.nl (Vedran) if you are interested.");
+			}
+			
 			
 			/**
 			 *  Gets the data from the type dropdown boxes and saves it and then runs APE
@@ -338,7 +316,8 @@ app.directive('dir2', function () { // Directive for the control flow picture li
 						"outputs": [],
 						"solution_min_length": "",
 						"solution_max_length": "",
-						"max_solutions": ""
+						"max_solutions": "",
+						"use_all_generated_data": ""
 				};
 				/** Iterate through the input dropdown-boxes */
 				var index1 = 0;
@@ -423,18 +402,37 @@ app.directive('dir2', function () { // Directive for the control flow picture li
 				$scope.writeConstraints(allConstraintsStr);
 
 				/** Fill the config field */
+				if(isNaN($scope.minWorkflowLength) || $scope.minWorkflowLength < 1) {
+					alert("Min workflow length has to be a positive number.");
+					return;
+				}
+				
+				if(isNaN($scope.maxWorkflowLength) || $scope.maxWorkflowLength < 1) {
+					alert("Max workflow length has to be a positive number.");
+					return;
+				}
+				if($scope.minWorkflowLength > 30 || $scope.maxWorkflowLength > 30){
+					alert("Demo version does not suport solutions longer than 30 steps. In case you want to experiment further you are welcome to test our local version of the app available at\n\n https://github.com/sanctuuary/Burke_Docker");
+					return;
+				}
 				toSend.solution_min_length = $scope.minWorkflowLength;
 				toSend.solution_max_length = $scope.maxWorkflowLength;
+				if(isNaN($scope.solutionNumber) || $scope.solutionNumber < 1) {
+					alert("Number of solutions has to be a positive number.");
+					return;
+				} else if($scope.solutionNumber > 100){
+					alert("Demo version does not suport more then 100 solutions. In case you want to experiment further you are welcome to test our local version of the app available at\n\n https://github.com/sanctuuary/Burke_Docker");
+					return;
+				}
 				toSend.max_solutions = $scope.solutionNumber;
-				/** Serialize JSON */
-				var toSendStringified = JSON.stringify(toSend);
+				toSend.use_all_generated_data = $scope.use_all_generated_data;
 				/** Running APE */
 				const results = document.getElementById("resultsBody");
 				results.innerHTML = '';
+				document.getElementById("exportButton").style.visibility = 'hidden';
 				var overlay = document.getElementById('loading');
 				overlay.innerHTML = "<div id='loading' style='width:100%; height: 100%; top: 0; z-index: 100; position: absolute; background: lightgray; opacity: 0.5; text-align: center; font-size: large; padding-top: 25%; font-weight: bold;'>Loading...</div>";
 				document.body.appendChild(overlay);
-				
 				$scope.runApe(toSend);
 			}
 		});

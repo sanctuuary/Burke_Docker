@@ -24,7 +24,7 @@
 			and APE! You can test any of the four use cases described in the
 			Bioinformatics paper on <a href="https://doi.org/10.1093/bioinformatics/bty646">Automated workflow Composition in Mass Spectrometry Based Proteomics<a>, 
 			or create your own requests. </p>
-			<p><button class="button" ng-click="dropdownModelNameDataInput = 'http://edamontology.org/data_0943'; dropdownModelNameFormatInput='http://edamontology.org/format_3712'; dropdownModelNameDataOutput='http://edamontology.org/data_1506'; dropdownModelNameFormatOutput='http://edamontology.org/format_1915'">Use Case 1</button>
+			<p><button class="button" ng-click="dropdownModelNameDataInput = 'http://edamontology.org/data_0943'; dropdownModelNameFormatInput='http://edamontology.org/format_3712'; dropdownModelNameDataOutput='http://edamontology.org/data_1506'; dropdownModelNameFormatOutput='http://edamontology.org/format_1915'; useCase1()">Use Case 1</button>
 			<button class="button" ng-click="dropdownModelNameDataInput = 'http://edamontology.org/data_0943'; dropdownModelNameFormatInput='http://edamontology.org/format_3712'; dropdownModelNameDataOutput='http://edamontology.org/data_1506'; dropdownModelNameFormatOutput='http://edamontology.org/format_1915'">Use Case 2</button>
 			<button class="button" ng-click="dropdownModelNameDataInput = 'http://edamontology.org/data_0943'; dropdownModelNameFormatInput='http://edamontology.org/format_3712'; dropdownModelNameDataOutput='http://edamontology.org/data_0945';dropdownModelNameFormatOutput='http://edamontology.org/format_1915'">Use Case 3</button>
 			<button class="button" ng-click="dropdownModelNameDataInput = 'http://edamontology.org/data_0943'; dropdownModelNameFormatInput='http://edamontology.org/format_3712'; dropdownModelNameDataOutput='http://edamontology.org/data_0928'; dropdownModelNameFormatOutput='http://edamontology.org/format_1915'">Use Case 4</button></p>
@@ -96,17 +96,14 @@
 			
 			<button class="button" ng-click="addConstraint()">+</button>
 			<table>
-				<tbody id="constraints">
-					<tr id="testID">
+				<tr id="testID">
 						<td id="constraintsSection">
 							<select ng-model=selectedConstraint ng-options="x.value as x.label for x in constraints">
 								<option value="" label=""></option>
 							</select>
 						</td>
 					</tr>
-					<tr ng-repeat="rowContent in constraintRows">
-						<td>{{rowContent}}</td>
-					</tr>
+				<tbody id="constraints">
 				</tbody>
 			</table>
 			
@@ -116,21 +113,29 @@
 				<tbody id="config">
 					<tr id="configSection">	<!-- One input with a format type and a data type-->
 						<td>
-							Number of solutions: <input ng-model=solutionNumber type="number" required style="display: inline">
+							Number of solutions: <input  min="1" ng-model=solutionNumber type="number" required style="display: inline">
 						</td>
 						<td>
-							Min workflow length: <input ng-model=minWorkflowLength type="number" required style="display: inline">
+							Min workflow length: <input  min="1" ng-model=minWorkflowLength type="number" required style="display: inline">
 						</td>
+							Data outputs to be used:
+							<select id="use_all_generated_data" ng-model=use_all_generated_data>
+							  <option value="all">all</option>
+							  <option value="one">at least one per tool</option>
+							</select>
 						<td>
-							Max workflow length: <input ng-model=maxWorkflowLength type="number" required style="display: inline">
+							Max workflow length: <input  min="1" ng-model=maxWorkflowLength type="number" required style="display: inline">
 						</td>
+					</tr>
+					<tr> 
+					
 					</tr>
 				</tbody>
 			</table>
 		
 		</div>
 		<button class="runButton" ng-click="fetchUserInputData()">Run</button>
-		
+		<button id="exportButton" class="runButton" ng-click="exportWorkflows()">Export workflows to CWL</button>
 		<table id="results" ng-show="showTable">
 		    <tr id="firstRow">
 					<th><input ng-model="dummy" type="checkbox" checked="true"></th>
